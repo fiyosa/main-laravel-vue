@@ -1,0 +1,15 @@
+name: Test Self Hosted Runner
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cek runner
+        run: |
+          echo "Runner jalan di STB HG680P"
+          uname -a
