@@ -18,21 +18,24 @@ jobs:
 
       - name: Stop old containers
         run: |
-          podman compose -f docker-compose.auto.yml down --remove-orphans || true
-          podman compose down --remove-orphans || true
+          podman-compose -f docker-compose.auto.yml down --remove-orphans || true
+          podman-compose down --remove-orphans || true
+
+      - name: Build frontend assets
+        run: npm run build
 
       - name: Build and start services
         run: |
           cp .dockerignore.auto .dockerignore
-          podman compose -f docker-compose.auto.yml up --build -d
+          podman-compose -f docker-compose.auto.yml up --build -d
 
       - name: Wait for app healthy
         run: |
           for i in $(seq 1 30); do
-            if podman compose -f docker-compose.auto.yml ps app | grep -q "(healthy)"; then exit 0; fi
+            if podman-compose -f docker-compose.auto.yml ps app | grep -q "(healthy)"; then exit 0; fi
             sleep 5
           done
-          podman compose -f docker-compose.auto.yml logs app
+          podman-compose -f docker-compose.auto.yml logs app
           exit 1
 
       - name: Cleanup old images
