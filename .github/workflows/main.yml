@@ -1,15 +1,30 @@
-name: Test Self Hosted Runner
+name: Deployment
 
 on:
   push:
     branches: [master]
 
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 jobs:
-  test:
+  deploy:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - name: Cek runner
+
+      - name: Build and start services
+        run: podman compose up --build -d
+
+      - name: Wait for app healthy
         run: |
-          echo "Runner jalan di STB HG680P"
-          uname -a
+          for i in $(seq 1 30); do
+            if podman compose ps app | grep -q "(healthy)"; then exit 0; fi
+            sleep 5
+          done
+          podman compose logs app
+          exit 1
+
+      - name: Cleanup old images
+        run: podman image prune -f
