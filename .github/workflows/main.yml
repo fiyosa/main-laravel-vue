@@ -13,17 +13,26 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Stop old containers
+        run: |
+          podman compose -f docker-compose.auto.yml down --remove-orphans || true
+          podman compose down --remove-orphans || true
 
       - name: Build and start services
-        run: podman-compose up --build -d
+        run: |
+          cp .dockerignore.auto .dockerignore
+          podman compose -f docker-compose.auto.yml up --build -d
 
       - name: Wait for app healthy
         run: |
           for i in $(seq 1 30); do
-            if podman-compose ps app | grep -q "(healthy)"; then exit 0; fi
+            if podman compose -f docker-compose.auto.yml ps app | grep -q "(healthy)"; then exit 0; fi
             sleep 5
           done
-          podman-compose logs app
+          podman compose -f docker-compose.auto.yml logs app
           exit 1
 
       - name: Cleanup old images

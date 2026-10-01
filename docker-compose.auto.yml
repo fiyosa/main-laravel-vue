@@ -1,0 +1,56 @@
+# NOTE: podman/docker compose only reads `.dockerignore`.
+# Before building with this file, swap it in:
+#   cp .dockerignore.auto .dockerignore
+# Then: podman compose -f docker-compose.auto.yml up --build -d
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.auto
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8080:8080"
+    volumes:
+      - app-storage:/app/storage
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "php artisan about >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile.auto
+    command: ["php", "artisan", "queue:work", "--tries=3", "--sleep=3", "--timeout=90"]
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - app-storage:/app/storage
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.auto
+    command: ["sh", "-c", "while true; do php artisan schedule:run --no-interaction; sleep 60; done"]
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - app-storage:/app/storage
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  app-storage:
