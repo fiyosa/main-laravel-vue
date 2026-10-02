@@ -9,12 +9,6 @@ services:
     volumes:
       - app-storage:/app/storage
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "php artisan about >/dev/null 2>&1 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   queue:
     build: .
@@ -25,8 +19,7 @@ services:
     volumes:
       - app-storage:/app/storage
     depends_on:
-      app:
-        condition: service_healthy
+      - app
     restart: unless-stopped
 
   scheduler:
@@ -38,8 +31,7 @@ services:
     volumes:
       - app-storage:/app/storage
     depends_on:
-      app:
-        condition: service_healthy
+      - app
     restart: unless-stopped
 
 volumes:

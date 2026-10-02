@@ -18,6 +18,7 @@ jobs:
 
       - name: Stop old containers
         run: |
+          podman rm -f laravel-app laravel-queue laravel-scheduler || true
           podman-compose -f docker-compose.auto.yml down --remove-orphans || true
           podman-compose down --remove-orphans || true
 
@@ -27,16 +28,7 @@ jobs:
       - name: Build and start services
         run: |
           cp .dockerignore.auto .dockerignore
-          podman-compose -f docker-compose.auto.yml up --build -d --no-recreate
-
-      - name: Wait for app healthy
-        run: |
-          for i in $(seq 1 60); do
-            if curl -fs http://localhost:8080/up >/dev/null 2>&1 || curl -fs http://localhost:8080/ >/dev/null 2>&1; then exit 0; fi
-            sleep 5
-          done
-          podman-compose -f docker-compose.auto.yml logs app
-          exit 1
+          podman-compose -f docker-compose.auto.yml up --build -d
 
       - name: Cleanup old images
         run: podman image prune -f

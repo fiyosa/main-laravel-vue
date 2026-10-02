@@ -4,6 +4,7 @@
 # Then: podman compose -f docker-compose.auto.yml up --build -d
 services:
   app:
+    container_name: laravel-app
     build:
       context: .
       dockerfile: Dockerfile.auto
@@ -14,14 +15,9 @@ services:
     volumes:
       - app-storage:/app/storage
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "php artisan about >/dev/null 2>&1 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   queue:
+    container_name: laravel-queue
     build:
       context: .
       dockerfile: Dockerfile.auto
@@ -35,6 +31,7 @@ services:
     restart: unless-stopped
 
   scheduler:
+    container_name: laravel-scheduler
     build:
       context: .
       dockerfile: Dockerfile.auto
