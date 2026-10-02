@@ -8,8 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile.auto
     env_file:
-      - path: .env
-        required: false
+      - .env
     ports:
       - "8080:8080"
     volumes:
@@ -28,13 +27,11 @@ services:
       dockerfile: Dockerfile.auto
     command: ["php", "artisan", "queue:work", "--tries=3", "--sleep=3", "--timeout=90"]
     env_file:
-      - path: .env
-        required: false
+      - .env
     volumes:
       - app-storage:/app/storage
     depends_on:
-      app:
-        condition: service_healthy
+      - app
     restart: unless-stopped
 
   scheduler:
@@ -43,13 +40,11 @@ services:
       dockerfile: Dockerfile.auto
     command: ["sh", "-c", "while true; do php artisan schedule:run --no-interaction; sleep 60; done"]
     env_file:
-      - path: .env
-        required: false
+      - .env
     volumes:
       - app-storage:/app/storage
     depends_on:
-      app:
-        condition: service_healthy
+      - app
     restart: unless-stopped
 
 volumes:

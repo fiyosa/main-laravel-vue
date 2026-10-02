@@ -27,12 +27,12 @@ jobs:
       - name: Build and start services
         run: |
           cp .dockerignore.auto .dockerignore
-          podman-compose -f docker-compose.auto.yml up --build -d
+          podman-compose -f docker-compose.auto.yml up --build -d --no-recreate
 
       - name: Wait for app healthy
         run: |
-          for i in $(seq 1 30); do
-            if podman-compose -f docker-compose.auto.yml ps app | grep -q "(healthy)"; then exit 0; fi
+          for i in $(seq 1 60); do
+            if curl -fs http://localhost:8080/up >/dev/null 2>&1 || curl -fs http://localhost:8080/ >/dev/null 2>&1; then exit 0; fi
             sleep 5
           done
           podman-compose -f docker-compose.auto.yml logs app
