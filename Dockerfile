@@ -12,8 +12,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 \
     QUEUE_CONNECTION=database
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git unzip libzip-dev libicu-dev libpq-dev \
-    && docker-php-ext-install -j$(nproc) pdo_pgsql bcmath intl zip pcntl \
+    && apt-get install -y --no-install-recommends git unzip libzip-dev libpq-dev \
+    && docker-php-ext-install -j$(nproc) pdo_pgsql bcmath zip pcntl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
