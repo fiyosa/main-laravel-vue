@@ -28,7 +28,7 @@ jobs:
 
       - name: Build and start services
         run: |
-          podman image exists laravel-php-base:8.5-pgsql-v1 || podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
+          # podman image exists laravel-php-base:8.5-pgsql-v1 || podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
           podman rm -f laravel-app || true
           podman-compose -f docker-compose.auto.yml up --build -d
 
@@ -38,4 +38,8 @@ jobs:
           git reset --hard
           podman container prune -f || true
           podman image prune -f || true
-          for id in $(podman images -f dangling=true -q); do podman rmi "$id" || true; done
+          for i in 1 2 3 4 5; do
+            ids=$(podman images -f dangling=true -q)
+            [ -z "$ids" ] && break
+            for id in $ids; do podman rmi "$id" || true; done
+          done
