@@ -3,7 +3,7 @@
 FROM php:8.5-cli-bookworm
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions pdo_pgsql bcmath zip pcntl
+RUN install-php-extensions pdo_pgsql bcmath zip pcntl htop
 
 WORKDIR /app
 COPY . .
