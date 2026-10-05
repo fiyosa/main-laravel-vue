@@ -21,8 +21,7 @@ jobs:
       - name: Stop old containers
         run: |
           git reset --hard
-          cp .dockerignore.auto .dockerignore
-          podman-compose -f docker-compose.auto.yml down --remove-orphans || true
+          podman-compose -f docker-compose.yml down --remove-orphans || true
           podman rm -f laravel-app || true
           podman network rm main-laravel-vue_default || true
 
@@ -33,10 +32,9 @@ jobs:
         run: |
           podman image exists laravel-php-base:8.5-pgsql-v1 || podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
           podman rm -f laravel-app || true
-          podman-compose -f docker-compose.auto.yml --podman-build-args="--squash" up --build -d
+          podman-compose -f docker-compose.yml --podman-build-args="--squash" up --build -d
 
       - name: Cleanup old images
         run: |
-          git reset --hard
           podman container prune -f || true
           podman image prune -f || true

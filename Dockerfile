@@ -1,29 +1,13 @@
 # syntax=docker/dockerfile:1
 
-FROM node:22-alpine AS frontend
-WORKDIR /src
-COPY . .
-RUN npm run install \
-    && npm run build
-
-FROM php:8.3-cli-bookworm
-
-ENV COMPOSER_ALLOW_SUPERUSER=1 \
-    QUEUE_CONNECTION=database
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends git unzip libzip-dev libpq-dev \
-    && docker-php-ext-install -j$(nproc) pdo_pgsql bcmath zip pcntl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Base image is built only once from Dockerfile.base
+# (manual: podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .)
+# Daily deploys only rebuild the application layers below.
+FROM laravel-php-base:8.5-pgsql-v1
 
 WORKDIR /app
 COPY . .
-COPY --from=frontend /src/public/build ./public/build
-RUN composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader \
-    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

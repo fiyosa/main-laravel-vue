@@ -1,14 +1,17 @@
+# Then: podman compose -f docker-compose.yml up --build -d
 services:
   app:
-    build: .
+    container_name: laravel-app
+    build:
+      context: .
+      dockerfile: Dockerfile
     env_file:
-      - path: .env
-        required: false
+      - .env
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - app-storage:/app/storage
-    restart: unless-stopped
+    restart: always
 
 volumes:
   app-storage:
