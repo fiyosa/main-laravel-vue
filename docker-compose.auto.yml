@@ -16,33 +16,5 @@ services:
       - app-storage:/app/storage
     restart: unless-stopped
 
-  queue:
-    container_name: laravel-queue
-    build:
-      context: .
-      dockerfile: Dockerfile.auto
-    command: ["php", "artisan", "queue:work", "--tries=3", "--sleep=3", "--timeout=90"]
-    env_file:
-      - .env
-    volumes:
-      - app-storage:/app/storage
-    depends_on:
-      - app
-    restart: unless-stopped
-
-  scheduler:
-    container_name: laravel-scheduler
-    build:
-      context: .
-      dockerfile: Dockerfile.auto
-    command: ["sh", "-c", "while true; do php artisan schedule:run --no-interaction; sleep 60; done"]
-    env_file:
-      - .env
-    volumes:
-      - app-storage:/app/storage
-    depends_on:
-      - app
-    restart: unless-stopped
-
 volumes:
   app-storage:

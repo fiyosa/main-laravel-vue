@@ -18,9 +18,8 @@ jobs:
 
       - name: Stop old containers
         run: |
-          podman rm -f laravel-app laravel-queue laravel-scheduler || true
+          podman rm -f laravel-app || true
           podman-compose -f docker-compose.auto.yml down --remove-orphans || true
-          podman-compose down --remove-orphans || true
 
       - name: Build frontend assets
         run: npm run build
@@ -29,13 +28,6 @@ jobs:
         run: |
           cp .dockerignore.auto .dockerignore
           podman-compose -f docker-compose.auto.yml up --build -d
-
-      - name: Verify containers
-        run: |
-          whoami
-          podman ps -a
-          podman-compose -f docker-compose.auto.yml ps
-          podman logs laravel-app || true
 
       - name: Cleanup old images
         run: podman image prune -f

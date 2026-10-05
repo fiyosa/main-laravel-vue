@@ -10,29 +10,5 @@ services:
       - app-storage:/app/storage
     restart: unless-stopped
 
-  queue:
-    build: .
-    command: ["php", "artisan", "queue:work", "--tries=3", "--sleep=3", "--timeout=90"]
-    env_file:
-      - path: .env
-        required: false
-    volumes:
-      - app-storage:/app/storage
-    depends_on:
-      - app
-    restart: unless-stopped
-
-  scheduler:
-    build: .
-    command: ["sh", "-c", "while true; do php artisan schedule:run --no-interaction; sleep 60; done"]
-    env_file:
-      - path: .env
-        required: false
-    volumes:
-      - app-storage:/app/storage
-    depends_on:
-      - app
-    restart: unless-stopped
-
 volumes:
   app-storage:
