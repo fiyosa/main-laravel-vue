@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
 
 if [ "${1:-}" = "php" ] && [ "${2:-}" = "artisan" ] && [ "${3:-}" = "serve" ]; then
   php artisan config:cache || true
@@ -12,12 +12,12 @@ if [ "${1:-}" = "php" ] && [ "${2:-}" = "artisan" ] && [ "${3:-}" = "serve" ]; t
   (
     while true
     do
-      php artisan queue:work --tries=3 --sleep=3 --timeout=90 --max-time=3600
+      php artisan queue:work --tries=3 --sleep=3 --timeout=90 --max-time=3600 || true
       sleep 1
     done
-  ) >/proc/1/fd/1 2>&1 &
+  ) &
 
-  php artisan schedule:work >/proc/1/fd/1 2>&1 &
+  php artisan schedule:work --quiet &
 fi
 
 exec "$@"
