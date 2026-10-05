@@ -36,5 +36,5 @@ jobs:
       - name: Cleanup old images
         run: |
           git reset --hard
-          podman container prune -f || true
+          # podman container prune -f || true
           podman image prune -f || true
