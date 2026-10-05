@@ -28,6 +28,7 @@ jobs:
       - name: Build and start services
         run: |
           cp .dockerignore.auto .dockerignore
+          podman image exists laravel-php-base:8.5-pgsql-v1 || podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
           podman rm -f laravel-app || true
           podman-compose -f docker-compose.auto.yml up --build -d
 
