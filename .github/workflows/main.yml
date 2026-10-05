@@ -27,6 +27,7 @@ jobs:
       - name: Build and start services
         run: |
           cp .dockerignore.auto .dockerignore
+          podman rm -f laravel-app || true
           podman-compose -f docker-compose.auto.yml up --build -d
 
       - name: Cleanup old images
