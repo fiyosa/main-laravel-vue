@@ -1,44 +1,42 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { postLoginAuth } from '../../../api/auth/postLoginAuth'
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { postLoginAuth } from '../../../api/auth/postLoginAuth'
 
-const router = useRouter()
+  const router = useRouter()
 
-const email = ref('')
-const password = ref('')
-const errors = ref<Record<string, string[]>>({})
-const isPending = ref(false)
+  const email = ref('')
+  const password = ref('')
+  const errors = ref<Record<string, string[]>>({})
+  const isPending = ref(false)
 
-async function handleLogin() {
-  errors.value = {}
-  isPending.value = true
-  const res = await postLoginAuth({ payload: { email: email.value, password: password.value } })
-  isPending.value = false
-  if (res.status === 422) {
-    errors.value = res.data?.errors || {}
-  } else if (res.status >= 400) {
-    errors.value = { email: ['Invalid credentials'] }
-  } else {
-    router.push('/admin/dashboard')
+  async function handleLogin() {
+    errors.value = {}
+    isPending.value = true
+    const res = await postLoginAuth({ payload: { email: email.value, password: password.value } })
+    isPending.value = false
+    if (res.status === 422) {
+      errors.value = res.data?.errors || {}
+    } else if (res.status >= 400) {
+      errors.value = { email: ['Invalid credentials'] }
+    } else {
+      router.push('/admin/dashboard')
+    }
   }
-}
 </script>
 
 <template>
   <div class="min-h-screen bg-background flex items-center justify-center p-4">
     <div class="w-full max-w-sm">
       <div class="text-center mb-8">
-        <h1 class="text-2xl font-semibold text-foreground">GSD Skill</h1>
+        <h1 class="text-2xl font-semibold text-foreground">GSD Skill hehe</h1>
         <p class="text-sm text-muted-foreground mt-1">Sign in to your account</p>
       </div>
 
       <div class="bg-card border border-border rounded-xl p-6">
         <form @submit.prevent="handleLogin" class="space-y-5">
           <div>
-            <label for="email" class="block text-sm font-medium text-foreground mb-1.5">
-              Email
-            </label>
+            <label for="email" class="block text-sm font-medium text-foreground mb-1.5"> Email </label>
             <input
               id="email"
               v-model="email"
@@ -54,9 +52,7 @@ async function handleLogin() {
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-foreground mb-1.5">
-              Password
-            </label>
+            <label for="password" class="block text-sm font-medium text-foreground mb-1.5"> Password </label>
             <input
               id="password"
               v-model="password"
@@ -88,9 +84,7 @@ async function handleLogin() {
         </form>
       </div>
 
-      <p class="text-center text-xs text-muted-foreground mt-6">
-        GSD Skill &mdash; Admin Dashboard
-      </p>
+      <p class="text-center text-xs text-muted-foreground mt-6">GSD Skill &mdash; Admin Dashboard</p>
     </div>
   </div>
 </template>
