@@ -18,20 +18,25 @@ jobs:
         with:
           clean: false
 
-      - name: Stop old containers
+      - name: Build frontend assets
         run: |
           git reset --hard
-          podman-compose -f docker-compose.yml down --remove-orphans || true
-          podman rm -f laravel-app || true
-          podman network rm main-laravel-vue_default || true
+          npm run build
 
-      - name: Build frontend assets
-        run: npm run build
+      - name: Stop old containers
+        run: |
+          podman-compose -f docker-compose.yml down --remove-orphans || true
+          podman rm -f --time 5 laravel-app || true
+          podman network rm main-laravel-vue_default || true
+          if podman container exists laravel-app
+          then
+            echo "Failed to remove the old container"
+            exit 1
+          fi
 
       - name: Build and start services
         run: |
           podman image exists laravel-php-base:8.5-pgsql-v1 || podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
-          podman rm -f laravel-app || true
           podman-compose -f docker-compose.yml --podman-build-args="--squash" up --build -d
 
       - name: Cleanup old images
