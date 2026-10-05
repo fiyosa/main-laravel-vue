@@ -11,10 +11,10 @@ services:
     env_file:
       - .env
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - app-storage:/app/storage
-    restart: unless-stopped
+    restart: always
 
 volumes:
   app-storage:
