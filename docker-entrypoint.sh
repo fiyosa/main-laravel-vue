@@ -9,8 +9,15 @@ if [ "${1:-}" = "php" ] && [ "${2:-}" = "artisan" ] && [ "${3:-}" = "serve" ]; t
   php artisan route:cache || true
   php artisan view:cache || true
 
-  nohup php artisan queue:work --tries=3 --sleep=3 --timeout=90 >>storage/logs/queue.log 2>&1 &
-  nohup sh -c 'while true; do php artisan schedule:run --no-interaction; sleep 60; done' >>storage/logs/scheduler.log 2>&1 &
+  (
+    while true
+    do
+      php artisan queue:work --tries=3 --sleep=3 --timeout=90 --max-time=3600
+      sleep 1
+    done
+  ) >/proc/1/fd/1 2>&1 &
+
+  php artisan schedule:work >/proc/1/fd/1 2>&1 &
 fi
 
 exec "$@"
