@@ -20,8 +20,9 @@ jobs:
         run: |
           git reset --hard
           cp .dockerignore.auto .dockerignore
-          podman rm -f laravel-app || true
           podman-compose -f docker-compose.auto.yml down --remove-orphans || true
+          podman rm -f laravel-app || true
+          podman network rm main-laravel-vue_default || true
 
       - name: Build frontend assets
         run: npm run build
@@ -32,6 +33,15 @@ jobs:
           podman rm -f laravel-app || true
           podman-compose -f docker-compose.auto.yml up --build -d
 
+      - name: Debug port forwarding
+        if: always()
+        run: |
+          podman ps -a --filter name=laravel-app || true
+          podman port laravel-app || true
+          ss -tlnp | grep -E '8080|rootlessport' || echo "no-8080-listener"
+          ps aux | grep rootlessport | grep -v grep || true
+          podman logs --tail=20 laravel-app || true
+
       - name: Cleanup old images
         if: always()
         run: |
@@ -40,6 +50,8 @@ jobs:
           podman image prune -f || true
           for i in 1 2 3 4 5; do
             ids=$(podman images -f dangling=true -q)
+            echo "pass $i dangling: $ids"
             [ -z "$ids" ] && break
-            for id in $ids; do podman rmi "$id" || true; done
+            for id in $ids; do podman rmi "$id" || echo "keep $id"; done
           done
+          podman image ls -a || true
