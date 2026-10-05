@@ -12,6 +12,7 @@
         "laravel/passport": "*",
         "laravel/tinker": "^3.0",
         "prettus/l5-repository": "^4.0",
+        "romalytar/yammi-jobs-monitoring-laravel": "^2.3",
         "spatie/laravel-permission": "*"
     },
     "require-dev": {
