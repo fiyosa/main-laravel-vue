@@ -7,9 +7,10 @@
 
 FROM php:8.5-cli-alpine
 
-RUN apk add --no-cache postgresql-dev libzip-dev \
+RUN apk add --no-cache libpq libzip \
+    && apk add --no-cache --virtual .build-deps postgresql-dev libzip-dev \
     && docker-php-ext-install -j$(nproc) pdo_pgsql bcmath zip pcntl \
-    && apk del postgresql-dev libzip-dev
+    && apk del .build-deps
 
 RUN apk add --no-cache htop vim procps
 
