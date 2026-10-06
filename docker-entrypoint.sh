@@ -10,21 +10,29 @@ if [ "${1:-}" = "php" ] && [ "${2:-}" = "artisan" ] && [ "${3:-}" = "serve" ]; t
   # php artisan view:clear || true
   # php artisan cache:clear || true
   # php artisan clear-compiled || true
+  # php artisan optimize:clear || true # short version
 
-  php artisan config:cache || true
-  php artisan event:cache || true
-  php artisan route:cache || true
-  php artisan view:cache || true
+  # php artisan config:cache || true
+  # php artisan event:cache || true
+  # php artisan route:cache || true
+  # php artisan view:cache || true
+  php artisan optimize || true # short version
 
   (
     while true
     do
       php artisan queue:work --tries=3 --sleep=3 --timeout=90 --max-time=3600 || true
-      sleep 1
+      sleep 3 # seconds
     done
   ) &
 
-  php artisan schedule:work --quiet &
+  (
+    while true
+    do
+      php artisan schedule:work --quiet || true
+      sleep 3 # seconds
+    done
+  ) &
 fi
 
 exec "$@"
