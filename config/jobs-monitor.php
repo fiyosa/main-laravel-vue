@@ -110,7 +110,7 @@ return [
         'path' => env('JOBS_MONITOR_UI_PATH', 'jobs-monitor'),
         'middleware' => ['web'],
         'guards' => null,
-        'allow_unauthenticated' => (bool) env('JOBS_MONITOR_UI_ALLOW_UNAUTHENTICATED', false),
+        'allow_unauthenticated' => (bool) env('JOBS_MONITOR_UI_ALLOW_UNAUTHENTICATED', true),
     ],
 
     /*
@@ -151,7 +151,7 @@ return [
     'settings' => [
         'authorization' => env('JOBS_MONITOR_SETTINGS_GATE'),
         'guard' => env('JOBS_MONITOR_SETTINGS_GUARD'),
-        'allow_unauthenticated' => (bool) env('JOBS_MONITOR_SETTINGS_ALLOW_UNAUTHENTICATED', false),
+        'allow_unauthenticated' => (bool) env('JOBS_MONITOR_SETTINGS_ALLOW_UNAUTHENTICATED', true),
     ],
 
     /*

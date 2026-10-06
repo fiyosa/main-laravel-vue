@@ -2,7 +2,7 @@
 
 # Contains PHP + extensions + debug tools. No application code, so it
 # never needs rebuilding on deploy. Build manually on the server:
-#   podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
+# podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
 # Then Dockerfile just uses: FROM laravel-php-base:8.5-pgsql-v1
 
 FROM php:8.5-cli-bookworm
@@ -11,7 +11,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions pdo_pgsql bcmath zip pcntl
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends htop procps \
+    && apt-get install -y --no-install-recommends htop vim procps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
