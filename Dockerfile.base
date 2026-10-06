@@ -12,7 +12,7 @@ RUN apk add --no-cache libpq libzip \
     && docker-php-ext-install -j$(nproc) pdo_pgsql bcmath zip pcntl \
     && apk del .build-deps
 
-RUN apk add --no-cache htop vim procps
+RUN apk add --no-cache bash htop vim procps
 
 WORKDIR /app
 
