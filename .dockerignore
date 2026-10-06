@@ -3,8 +3,7 @@
 node_modules
 resources/js/node_modules
 .env
-.env.backup
-.env.production
+.env.*
 *.log
 .phpunit.result.cache
 .phpunit.cache

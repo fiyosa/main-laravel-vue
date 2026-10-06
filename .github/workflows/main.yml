@@ -18,6 +18,14 @@ jobs:
         with:
           clean: false
 
+      - name: Check env file
+        run: |
+          if [ ! -f .env ]
+          then
+            echo ".env file not found on the server"
+            exit 1
+          fi
+
       - name: Build frontend assets
         run: |
           git reset --hard
@@ -36,7 +44,7 @@ jobs:
 
       - name: Build and start services
         run: |
-          podman image exists laravel-php-base:8.5-pgsql-v1 || podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
+          podman image exists laravel-php-base:8.5-pgsql-v1 || podman build --squash-all -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .
           podman-compose -f docker-compose.yml --podman-build-args="--squash" up --build -d
 
       - name: Cleanup old images
