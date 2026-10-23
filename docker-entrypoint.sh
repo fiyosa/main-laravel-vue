@@ -13,6 +13,6 @@ set -eu
 # php artisan event:cache || true
 # php artisan route:cache || true
 # php artisan view:cache || true
-php artisan optimize || true #  short version
+php artisan optimize || true # short version
 
 exec "$@"
