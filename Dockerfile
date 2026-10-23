@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 
 # Base image is built only once from Dockerfile.base
-# (manual: podman build -f Dockerfile.base -t laravel-php-base:8.5-pgsql-v1 .)
+# (manual: podman build -f Dockerfile.base -t laravel-php-base:8.5.12-pgsql-v1 .)
 # Daily deploys only rebuild the application layers below.
-FROM laravel-php-base:8.5-pgsql-v1
+FROM laravel-php-base:8.5.12-pgsql-v1
 
 WORKDIR /app
 COPY . .
